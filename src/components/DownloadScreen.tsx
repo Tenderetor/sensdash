@@ -5,7 +5,7 @@ import TextInput from './TextInput';
 import Button from './Button';
 import { ref, child, get } from "firebase/database";
 import db from '../firebase';
-import { CSVDownload } from "react-csv";
+import { CSVDownload, CSVLink } from "react-csv";
 
 const Container = styled.div`
     position: fixed;
@@ -147,22 +147,29 @@ function DownloadScreen(props:propTypes) {
                 </div>
 
                 <div style={{marginTop: '20px', marginBottom: '20px'}}>
+                    <CSVLink 
+                        data={csv} 
+                        target="_blank" 
+                        filename={"wavedata.csv"} 
+                        asyncOnClick={true}
 
-                    <Button 
-                        value={"download csv"}
-                        clicked={() => calculateCSVData()}
-                        color={"lightgrey"}
-                    />
+                        onClick={(e:any, done:any) => calculateCSVData(e, done)}
+                        style={{
+                            border: '0px',
+                            outline: 'none'
+                        }}
+                    >
+
+                        <Button 
+                            value={"download csv"}
+                            color={"lightgrey"}
+                        />
+                    </CSVLink>
                 </div>
                 
 
             </Window>
 
-            {
-                downloadCsv &&
-                    <CSVDownload data={csv} target="_blank" filename={"wavedata.csv"} />
-
-            }
 
         </Container>
     );
@@ -201,80 +208,85 @@ function DownloadScreen(props:propTypes) {
         setEndString(newEndString)
     }
 
-    function calculateCSVData() {
+    async function calculateCSVData(e:any, done:any) {
         const sensorsRef = ref(db, 'Readings/');
-        setDownloadCsv(false)
 
         if(start > end) {
             setError('start date must be before end date')
 
-            return
+            done( false )
         }
 
 
-        get( sensorsRef ).then((snapshot:any) => {
-            if (snapshot.exists()) {
-                setError('')
+        let snapshot = await get( sensorsRef )
+        if (snapshot.exists()) {
+            setError('')
 
-                //console.log(snapshot.val())
-                let sens = snapshot.val()
+            //console.log(snapshot.val())
+            let sens = snapshot.val()
 
-                let newCsv:any = [].concat(csvData)
-                //console.log(newCsv)
+            let newCsv:any = [].concat(csvData)
+            //console.log(newCsv)
 
-                for (var key in sens) {
-                    let sensTimeStr = sens[key]["Time"]
-                    let str = sensTimeStr.split(',')
-                    let senseTime = new Date("20"+str[0])
-                    //console.log(senseTime)
+            for (var key in sens) {
+                let sensTimeStr = sens[key]["Time"]
+                let str = sensTimeStr.split(',')
+                let senseTime = new Date("20"+str[0])
+                //console.log(senseTime)
 
-                    if(senseTime <= end && senseTime >= start) {
-                        let co:number = sens[key]["Carbon dioxide"]
-                        let nir:number = sens[key]["NIR"] * 100
-                        let clear:number = sens[key]["Clear"] * 100
-                        let f1:number = sens[key]["F1 415nm"] * 100
-                        let f2:number = sens[key]["F2 445nm"] * 100
-                        let f3:number = sens[key]["F3 480nm"] * 100
-                        let f4:number = sens[key]["F4 515nm"] * 100
-                        let f5:number = sens[key]["F5 555nm"] * 100
-                        let f6:number = sens[key]["F6 590nm"] * 100
-                        let f7:number = sens[key]["F7 630nm"] * 100
-                        let f8:number = sens[key]["F8 680nm"] * 100
-                        let time:string = sens[key]["Time"]
-                        
-                        let newRow:any = [
-                            time,
-                            co,
-                            nir,
-                            clear,
-                            f1,
-                            f2,
-                            f3,
-                            f4,
-                            f5,
-                            f6,
-                            f7,
-                            f8
-                        ]
-                        newCsv.push(newRow)
-                    }
-                }   
-                //console.log(newCsv.length)
-                if(newCsv.length > 1) {
-                    setCsv(newCsv)
-                    setDownloadCsv(true)
+                if(senseTime <= end && senseTime >= start) {
+                    let co:number = sens[key]["Carbon dioxide"]
+                    let nir:number = sens[key]["NIR"] * 100
+                    let clear:number = sens[key]["Clear"] * 100
+                    let f1:number = sens[key]["F1 415nm"] * 100
+                    let f2:number = sens[key]["F2 445nm"] * 100
+                    let f3:number = sens[key]["F3 480nm"] * 100
+                    let f4:number = sens[key]["F4 515nm"] * 100
+                    let f5:number = sens[key]["F5 555nm"] * 100
+                    let f6:number = sens[key]["F6 590nm"] * 100
+                    let f7:number = sens[key]["F7 630nm"] * 100
+                    let f8:number = sens[key]["F8 680nm"] * 100
+                    let time:string = sens[key]["Time"]
+                    
+                    let newRow:any = [
+                        time,
+                        co,
+                        nir,
+                        clear,
+                        f1,
+                        f2,
+                        f3,
+                        f4,
+                        f5,
+                        f6,
+                        f7,
+                        f8
+                    ]
+                    newCsv.push(newRow)
                 }
+            }   
+            console.log(newCsv.length)
+            if(newCsv.length > 1) {
+                setCsv(newCsv)
+                console.log('returning true')
+                done( true )
 
-                else {
-                    setError('no data in this time period')
-                }
             }
 
             else {
-                setError('server error')
+                console.log('returning false')
+                setError('no data in this time period')
+                done( false )
 
             }
-        })
+        }
+
+        else {
+            console.log('returning false')
+            setError('server error')
+            done( false )
+        }
+
     }
 }
 

@@ -12,7 +12,7 @@ interface propTypes {
     value: string
     color: string
 
-    clicked: any
+    clicked?: any
     textColor?:string
 }
 
@@ -26,7 +26,8 @@ function Button(props:propTypes) {
         onClick={props.clicked}
         style={{
             background: props.color || 'lightgrey',
-            color: props.textColor || 'black'
+            color: props.textColor || 'black',
+            pointerEvents: props.clicked ? 'auto' : 'none'
         }}
     >
         {props.value}
