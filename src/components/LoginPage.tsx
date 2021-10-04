@@ -75,7 +75,7 @@ function LoginPage(props: propTypes) {
 
     onValue(usersRef, (snapshot:any) => {
       if(snapshot.exists()) {
-        console.log(snapshot.val())
+        //console.log(snapshot.val())
 
         let users = snapshot.val()
         let newUsernames = []
@@ -238,7 +238,7 @@ function LoginPage(props: propTypes) {
   }
 
   async function login() {
-    console.log(users)
+    //console.log(users)
     setLoginError('')
 
     let userCorrect = false
@@ -246,7 +246,7 @@ function LoginPage(props: propTypes) {
     for(let i = 0; i < users.length; i++) {
       if(users[i].username === loginUsername) {
         let hashLogin = await hashIt(loginPassword, users[i].salt)
-        console.log(hashLogin)
+        //console.log(hashLogin)
 
         if(hashLogin === users[i].password) {
           userCorrect = true

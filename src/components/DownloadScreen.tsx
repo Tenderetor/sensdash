@@ -84,10 +84,21 @@ function DownloadScreen(props:propTypes) {
     const d = new Date()
     const [start, setStart] = useState(d)
     const [end, setEnd] = useState(d)
+
+    const [startString, setStartString] = useState('')
+    const [endString, setEndString] = useState('')
+
     const [error, setError] = useState('')
 
     const [csv, setCsv] = useState<any>(csvData)
     const [downloadCsv, setDownloadCsv] = useState(false)
+
+    useEffect(() => {
+        let newStartString = getDateString(start)
+        setStartString(newStartString)
+        let newEndString = getDateString(end)
+        setEndString(newEndString)
+    }, [])
 
     return (
         <Container>
@@ -103,7 +114,7 @@ function DownloadScreen(props:propTypes) {
                         <Labels>from</Labels>
                         <TextBoxes>
                             <TextInput
-                                value={getDateString(start)}
+                                value={startString}
                                 placeholder={"dd/mm/yy"}
                                 type={'date'}
                                 setValue={setStartDate}
@@ -118,7 +129,7 @@ function DownloadScreen(props:propTypes) {
                         <Labels>to</Labels>
                         <TextBoxes>
                             <TextInput
-                                value={getDateString(end)}
+                                value={endString}
                                 placeholder={"dd/mm/yy"}
                                 type={'date'}
                                 setValue={setEndDate}
@@ -156,6 +167,7 @@ function DownloadScreen(props:propTypes) {
         </Container>
     );
 
+
     function getDateString(val: Date) {
 
         let yearStr = val.getFullYear()
@@ -169,27 +181,28 @@ function DownloadScreen(props:propTypes) {
 
         let finalString =  yearStr+'-'+monthStr+'-'+dayStr
 
-        console.log(finalString)
+        //console.log(finalString)
         return finalString
-
-
-
     }
 
     function setStartDate(val: any) {
-        console.log(end.getFullYear()+'-'+end.getMonth()+'-'+end.getDate())
+        //console.log(end.getFullYear()+'-'+end.getMonth()+'-'+end.getDate())
         let d = new Date(val.target.value)
         setStart(d)
+        let newStartString = getDateString(d)
+        setStartString(newStartString)
     }
     function setEndDate(val: any) {
-        console.log(val.target.value)
+        //console.log(val.target.value)
         let d = new Date(val.target.value)
-        console.log(d)
+        //console.log(d)
         setEnd(d)
+        let newEndString = getDateString(d)
+        setEndString(newEndString)
     }
 
     function calculateCSVData() {
-        const sensorsRef = ref(db, 'Sensors/');
+        const sensorsRef = ref(db, 'Readings/');
         setDownloadCsv(false)
 
         if(start > end) {
@@ -203,17 +216,17 @@ function DownloadScreen(props:propTypes) {
             if (snapshot.exists()) {
                 setError('')
 
-                console.log(snapshot.val())
+                //console.log(snapshot.val())
                 let sens = snapshot.val()
 
                 let newCsv:any = [].concat(csvData)
-                console.log(newCsv)
+                //console.log(newCsv)
 
                 for (var key in sens) {
                     let sensTimeStr = sens[key]["Time"]
                     let str = sensTimeStr.split(',')
                     let senseTime = new Date("20"+str[0])
-                    console.log(senseTime)
+                    //console.log(senseTime)
 
                     if(senseTime <= end && senseTime >= start) {
                         let co:number = sens[key]["Carbon dioxide"]
@@ -246,7 +259,7 @@ function DownloadScreen(props:propTypes) {
                         newCsv.push(newRow)
                     }
                 }   
-                console.log(newCsv.length)
+                //console.log(newCsv.length)
                 if(newCsv.length > 1) {
                     setCsv(newCsv)
                     setDownloadCsv(true)

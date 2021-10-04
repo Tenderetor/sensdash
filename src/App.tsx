@@ -5,7 +5,6 @@ import Dashboard from './components/Dashboard'
 
 import db from './firebase';
 import { ref, child, get, onValue } from "firebase/database";
-import axios from 'axios'
 
 const url = "https://sensordash.000webhostapp.com/index.php"
 
@@ -91,7 +90,6 @@ function App() {
     onValue(sensorsRef, async (snapshot:any) => {
       if (snapshot.exists()) {
         let sens = snapshot.val()
-        console.log(sens)
 
         let cnt = 0
 
@@ -109,15 +107,15 @@ function App() {
 
 
         for(let i = senseArray.length - 1; i >= 0; i--) {
-          console.log(i)
-          console.log(senseArray[i])
+          //console.log(i)
+          //console.log(senseArray[i])
           if(cnt === 10)
             break
 
           if(cnt === 0) {
 
             let lastTime = getTime(senseArray[i]["Time"])
-            console.log(lastTime)
+            //console.log(lastTime)
             setLastUpdated(lastTime)
           }
           let newCo:number = senseArray[i]["Carbon dioxide"]
@@ -233,7 +231,7 @@ function App() {
     let timeStr = str[1].split('+')
     let senseTime = new Date("20"+str[0])
 
-    return senseTime.toISOString().substring(0, 10) + "  at  " + timeStr[0]
+    return `${senseTime.getFullYear()}-${senseTime.getMonth() + 1}-${senseTime.getDate()}  at  ${timeStr[0]}`
   }
 
   function logout() {
