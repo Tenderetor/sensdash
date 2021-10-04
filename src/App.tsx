@@ -86,11 +86,12 @@ function App() {
 
 
   useEffect(() => {
-    const sensorsRef = ref(db, 'Sensors/');
+    const sensorsRef = ref(db, 'Readings/');
 
     onValue(sensorsRef, async (snapshot:any) => {
       if (snapshot.exists()) {
         let sens = snapshot.val()
+        console.log(sens)
 
         let cnt = 0
 
@@ -100,34 +101,43 @@ function App() {
         let blank2:wavType[] = []
         let newWaves = blank2.concat(waveSamples)
 
+        let senseArray:any[] = []
+
         for (var key in sens) {
-          
+          senseArray.push(sens[key])
+        }
+
+
+        for(let i = senseArray.length - 1; i >= 0; i--) {
+          console.log(i)
+          console.log(senseArray[i])
           if(cnt === 10)
             break
 
           if(cnt === 0) {
 
-            let lastTime = getTime(sens[key]["Time"])
+            let lastTime = getTime(senseArray[i]["Time"])
             console.log(lastTime)
             setLastUpdated(lastTime)
           }
-          let newCo:number = sens[key]["Carbon dioxide"]
+          let newCo:number = senseArray[i]["Carbon dioxide"]
           newCoSamples.push( newCo )
 
 
-          newWaves[0].samples.push(sens[key]["F1 415nm"] ) 
-          newWaves[1].samples.push(sens[key]["F2 445nm"] ) 
-          newWaves[2].samples.push(sens[key]["F3 480nm"] ) 
-          newWaves[3].samples.push(sens[key]["F4 515nm"] ) 
-          newWaves[4].samples.push(sens[key]["F5 555nm"] ) 
-          newWaves[5].samples.push(sens[key]["F6 590nm"] ) 
-          newWaves[6].samples.push(sens[key]["F7 630nm"] ) 
-          newWaves[7].samples.push(sens[key]["F8 680nm"] ) 
-          newWaves[8].samples.push(sens[key]["Clear"] ) 
-          newWaves[9].samples.push(sens[key]["NIR"] ) 
+          newWaves[0].samples.push(senseArray[i]["F1 415nm"] ) 
+          newWaves[1].samples.push(senseArray[i]["F2 445nm"] ) 
+          newWaves[2].samples.push(senseArray[i]["F3 480nm"] ) 
+          newWaves[3].samples.push(senseArray[i]["F4 515nm"] ) 
+          newWaves[4].samples.push(senseArray[i]["F5 555nm"] ) 
+          newWaves[5].samples.push(senseArray[i]["F6 590nm"] ) 
+          newWaves[6].samples.push(senseArray[i]["F7 630nm"] ) 
+          newWaves[7].samples.push(senseArray[i]["F8 680nm"] ) 
+          newWaves[8].samples.push(senseArray[i]["Clear"] ) 
+          newWaves[9].samples.push(senseArray[i]["NIR"] ) 
           
           cnt++
         }
+
         setWave(newWaves)
 
         let sampleMax = largestWave

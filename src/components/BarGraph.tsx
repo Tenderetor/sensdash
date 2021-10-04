@@ -52,8 +52,8 @@ function BarGraph(props:propTypes) {
                     },
                     scales: {
                         y: {
-                            min: props.min || 0,
-                            max: props.max || undefined   
+                            min: props.min ? Math.floor(props.min) : 0,
+                            max: props.max ? Math.floor(props.max) : undefined   
                         }
                     }
                 }
