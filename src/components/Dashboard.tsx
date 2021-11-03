@@ -8,7 +8,7 @@ import Button from './Button';
 import NumberSlider from './NumberSlider';
 import db from '../firebase';
 
-import { ref, onValue, push } from "firebase/database";
+import { ref, onValue, push, set } from "firebase/database";
 
 const colorsArr = [colors.darkPurple, colors.purple, colors.blue, colors.green, colors.darkBlue, colors.primary, colors.lightRed, colors.red, 'black', 'black']
 
@@ -105,7 +105,10 @@ interface propTypes {
 function Dashboard(props:propTypes) {
     const [downloadOpen, setDownloadOpen] = useState(false)
     const [pump1, setPump1] = useState(0)
+    const [pump1Key, setPump1Key] = useState("")
+
     const [pump2, setPump2] = useState(0)
+    const [pump2Key, setPump2Key] = useState("")
 
     useEffect(() => {
         const pumpsRef = ref(db, 'Pumps/');
@@ -119,9 +122,11 @@ function Dashboard(props:propTypes) {
             for (var key in pumps) {
                 if(pumps[key].pump === "pump1") {
                     setPump1(pumps[key].value)
+                    setPump1Key(key)
                 }
                 else if(pumps[key].pump === "pump2") {
                     setPump2(pumps[key].value)
+                    setPump2Key(key)
                 }
             }
           }
@@ -323,11 +328,12 @@ function Dashboard(props:propTypes) {
     }
 
     function setPumps(pumpName: string, val: number) {
-        const pumpsRef = ref(db, 'Pumps/');
+    
+        const pumpsRef = ref(db, 'Pumps/' + pumpName);
 
-        push(pumpsRef, {
-        pump: pumpName,
-        value: val,
+        set(pumpsRef, {
+            pump: pumpName,
+            value: val,
         });
     }
 }
