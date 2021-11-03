@@ -5,7 +5,10 @@ import { CSVLink, CSVDownload } from "react-csv";
 import colors from '../colors'
 import DownloadScreen from './DownloadScreen';
 import Button from './Button';
+import NumberSlider from './NumberSlider';
+import db from '../firebase';
 
+import { ref, onValue, push } from "firebase/database";
 
 const colorsArr = [colors.darkPurple, colors.purple, colors.blue, colors.green, colors.darkBlue, colors.primary, colors.lightRed, colors.red, 'black', 'black']
 
@@ -101,6 +104,32 @@ interface propTypes {
 
 function Dashboard(props:propTypes) {
     const [downloadOpen, setDownloadOpen] = useState(false)
+    const [pump1, setPump1] = useState(0)
+    const [pump2, setPump2] = useState(0)
+
+    useEffect(() => {
+        const pumpsRef = ref(db, 'Pumps/');
+    
+        onValue(pumpsRef, (snapshot:any) => {
+          if(snapshot.exists()) {
+            //console.log(snapshot.val())
+    
+            let pumps = snapshot.val()
+            console.log(pumps)
+            for (var key in pumps) {
+                if(pumps[key].pump === "pump1") {
+                    setPump1(pumps[key].value)
+                }
+                else if(pumps[key].pump === "pump2") {
+                    setPump2(pumps[key].value)
+                }
+            }
+          }
+    
+          
+        })
+
+      }, [])
 
   return (
     <Container>
@@ -186,12 +215,33 @@ function Dashboard(props:propTypes) {
                 <div style={{width: 'calc(100% / 4)', height: 'calc(100% / 3)', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         
                     <WaveGraphContainer>
-                        <CsvButton 
-                            onClick={() => setDownloadOpen(true)}
-                        >
-                            <div>Download</div>
-                            <div>CSV</div>
-                        </CsvButton>
+                        <div style={{height: '70%', width: '100%'}}>
+                            <div style={{height: '50%', width: '100%'}}>
+                                <NumberSlider
+                                    val={pump1}
+                                    setVal={pump1Setter}
+                                    heading="Pump 1"
+                                />
+                            </div>
+                            <div style={{height: '50%', width: '100%'}}>
+                                <NumberSlider
+                                    val={pump2}
+                                    setVal={pump2Setter}
+                                    heading="Pump 2"
+                                />
+                            </div>
+
+                        </div>
+
+                        <div style={{height: '30%', width: '100%'}}>
+                            <CsvButton 
+                                onClick={() => setDownloadOpen(true)}
+                            >
+                                <div>Download</div>
+                                <div>CSV</div>
+                            </CsvButton>
+                        </div>
+                        
                     </WaveGraphContainer>
                 </div> 
 
@@ -251,10 +301,35 @@ function Dashboard(props:propTypes) {
     </Container>
   );
 
-  function timeString(d: Date) {
-    let str = `${d.toISOString().substring(0, 10)}   ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
-    return str
+  function getPumpsVal() {
+
   }
+
+    function timeString(d: Date) {
+        let str = `${d.toISOString().substring(0, 10)}   ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+        return str
+    }
+
+    function pump2Setter(e:any) {
+        let val = e.target.value
+        setPumps('pump2', val)
+        setPump2(val)
+    }
+
+    function pump1Setter(e:any) {
+        let val = e.target.value
+        setPumps('pump1', val)
+        setPump1(val)
+    }
+
+    function setPumps(pumpName: string, val: number) {
+        const pumpsRef = ref(db, 'Pumps/');
+
+        push(pumpsRef, {
+        pump: pumpName,
+        value: val,
+        });
+    }
 }
 
 export default Dashboard;
