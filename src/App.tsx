@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard'
 
 import db from './firebase';
 import { ref, child, get, onValue } from "firebase/database";
-
+import "./App.css"
 const url = "https://sensordash.000webhostapp.com/index.php"
 
 interface wavType {

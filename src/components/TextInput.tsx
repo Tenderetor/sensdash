@@ -10,6 +10,7 @@ const Container = styled.input`
   border-radius: 5px;
   padding: 5px 7px;
   margin: 0px;
+  appearance: none;
 `
 
 interface propTypes {
