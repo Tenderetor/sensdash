@@ -7,6 +7,7 @@ import db from './firebase';
 import { ref, child, get, onValue } from "firebase/database";
 
 const url = "https://sensordash.000webhostapp.com/index.php"
+const url2 = "https://sensordash.000webhostapp.com/index.php?dash=one"
 
 interface wavType {
   name: string
@@ -197,7 +198,7 @@ function App() {
       },
   })  
   */
-    fetch(url, {method: 'GET'})
+    fetch(url2, {method: 'GET'})
     .then(response => response.json())
     .then(json => {
       console.log(json)
