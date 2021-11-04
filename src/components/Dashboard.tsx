@@ -105,10 +105,11 @@ interface propTypes {
 function Dashboard(props:propTypes) {
     const [downloadOpen, setDownloadOpen] = useState(false)
     const [pump1, setPump1] = useState(0)
-    const [pump1Key, setPump1Key] = useState("")
 
     const [pump2, setPump2] = useState(0)
-    const [pump2Key, setPump2Key] = useState("")
+
+    const [timerPump1, setTimerPump1] = useState<any>(null)
+    const [timerPump2, setTimerPump2] = useState<any>(null)
 
     useEffect(() => {
         const pumpsRef = ref(db, 'Pumps/');
@@ -122,17 +123,20 @@ function Dashboard(props:propTypes) {
             for (var key in pumps) {
                 if(pumps[key].pump === "pump1") {
                     setPump1(pumps[key].value)
-                    setPump1Key(key)
                 }
                 else if(pumps[key].pump === "pump2") {
                     setPump2(pumps[key].value)
-                    setPump2Key(key)
                 }
             }
           }
     
           
         })
+
+        return () => {
+            clearTimeout(timerPump1)
+            clearTimeout(timerPump2)
+        }
 
       }, [])
 
@@ -317,13 +321,27 @@ function Dashboard(props:propTypes) {
 
     function pump2Setter(e:any) {
         let val = e.target.value
-        setPumps('pump2', val)
+        clearTimeout(timerPump2)
+
+        setTimerPump2( 
+            setTimeout(() => {
+                setPumps('pump2', val)
+            }, 1000) 
+        )
+
         setPump2(val)
     }
 
     function pump1Setter(e:any) {
         let val = e.target.value
-        setPumps('pump1', val)
+        clearTimeout(timerPump1)
+
+        setTimerPump1( 
+            setTimeout(() => {
+                setPumps('pump1', val)
+            }, 1000) 
+        )
+
         setPump1(val)
     }
 
