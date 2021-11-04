@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import colors from '../colors'
 
-
+import TextInput from './TextInput';
 
 const Container = styled.div`
     height: 100%;
@@ -57,8 +57,17 @@ function NumberSlider(props:propTypes) {
                 min={0}
                 max={100}
             />
-            <div style={{marginLeft: '15px'}}>
-                {`${props.val}%`}
+            <div style={{width: '15px'}} />
+            <div style={{height: '20px', marginBottom: '7px'}}>
+                <TextInput
+                    value={props.val}
+                    setValue={props.setVal}
+                    type={'number'}
+                    placeholder={""}
+                />
+            </div>
+            <div style={{marginLeft: '25px', flexShrink: 0}}>
+                %
             </div>
         </Content>
     </Container>
