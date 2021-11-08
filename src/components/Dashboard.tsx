@@ -99,6 +99,7 @@ interface propTypes {
     lastUpdated: string
     largestWave: number
     serverOnline: boolean
+    mcuOnline: boolean
 }
 
 
@@ -261,6 +262,20 @@ function Dashboard(props:propTypes) {
             width: '100%', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#eeeeee'
         }}>
             <div style={{marginLeft: '20px', fontSize: '15px'}}>* all averages calculated using last 10 samples</div>
+
+            <div 
+                style={{
+                    fontSize: '15pzx',
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '100%',
+                }}
+                
+            >
+                MCU:
+                <div style={{height: '10px', marginLeft: '5px', marginTop: '2px', marginRight: '5px', width: '10px', borderRadius: '5px', background: props.mcuOnline ? 'green' : 'red'}} />
+                {props.mcuOnline ? "online" : "offline" }
+            </div>
 
             <div 
                 style={{

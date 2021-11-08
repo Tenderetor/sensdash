@@ -83,7 +83,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(d)
 
   const [serverOnline, setServerOnline] = useState(false)
-
+  const [mcuOnline, setMcuOnline] = useState(false)
 
   useEffect(() => {
     const sensorsRef = ref(db, 'Readings/');
@@ -184,6 +184,7 @@ function App() {
           largestWave={largestWave}
 
           serverOnline={serverOnline}
+          mcuOnline={mcuOnline}
         />
   );
 
@@ -206,6 +207,11 @@ function App() {
         setServerOnline(true)
       else 
         setServerOnline(false)
+
+      if(json.mcu === 'online')
+        setMcuOnline(true)
+      else 
+        setMcuOnline(false)
     })
     .catch(err => {
       setServerOnline(false)
