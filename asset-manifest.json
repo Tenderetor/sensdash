@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/sensdash/static/css/main.1b63a648.chunk.css",
-    "main.js": "/sensdash/static/js/main.e920d243.chunk.js",
-    "main.js.map": "/sensdash/static/js/main.e920d243.chunk.js.map",
+    "main.js": "/sensdash/static/js/main.57d2b07d.chunk.js",
+    "main.js.map": "/sensdash/static/js/main.57d2b07d.chunk.js.map",
     "runtime-main.js": "/sensdash/static/js/runtime-main.6eb2dec6.js",
     "runtime-main.js.map": "/sensdash/static/js/runtime-main.6eb2dec6.js.map",
     "static/js/2.8445ccf5.chunk.js": "/sensdash/static/js/2.8445ccf5.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.6eb2dec6.js",
     "static/js/2.8445ccf5.chunk.js",
     "static/css/main.1b63a648.chunk.css",
-    "static/js/main.e920d243.chunk.js"
+    "static/js/main.57d2b07d.chunk.js"
   ]
 }
